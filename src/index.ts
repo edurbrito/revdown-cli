@@ -146,6 +146,7 @@ function ask_user(markdown_file: string) {
                     }
                     else {
                         generate_slides(markdown_file)
+                        user_config.highlight_theme = ""
                         fs.writeFileSync(user_dir + "user.json", JSON.stringify(user_config))
                     }
                 })
