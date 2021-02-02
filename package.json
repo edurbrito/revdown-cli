@@ -1,5 +1,5 @@
 {
-  "name": "reveal-markdown",
+  "name": "revdown-cli",
   "version": "1.0.0",
   "description": "The markdown-to-revealjs presentation cli \"transpiler\"",
   "main": "./src/index.js",
@@ -13,7 +13,6 @@
   "author": "edurbrito",
   "license": "MIT",
   "bin": {
-    "reveal-markdown": "./src/index.js",
     "revdown": "./src/index.js"
   },
   "dependencies": {
