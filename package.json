@@ -1,0 +1,45 @@
+{
+  "name": "revdown-cli",
+  "version": "1.0.0",
+  "description": "The markdown-to-reveal.js presentation cli \"transpiler\"",
+  "main": "./src/index.js",
+  "scripts": {
+    "build": "tsc ./src/index.ts && chmod +x ./src/index.js",
+    "bin": "npm install && npm run build && sudo npm link",
+    "test": "tsc ./test/index.ts --outDir ./test/js/ && qunit ./test/js/test",
+    "test-file": "npm run build && node ./src/index.js ./test/example/test.md",
+    "unbin": "sudo npm unlink"
+  },
+  "author": "edurbrito",
+  "license": "MIT",
+  "bin": {
+    "revdown": "src/index.js"
+  },
+  "dependencies": {
+    "@types/node": "^14.14.22",
+    "chalk": "^4.1.0",
+    "inquirer": "^7.3.3",
+    "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {
+    "qunit": "^2.14.0",
+    "typescript": "^4.1.3"
+  },
+  "keywords": [
+    "revealjs",
+    "markdown",
+    "presentation",
+    "html"
+  ],
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edurbrito/revdown-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/edurbrito/revdown-cli/issues"
+  },
+  "homepage": "https://github.com/edurbrito/revdown-cli#readme"
+}
