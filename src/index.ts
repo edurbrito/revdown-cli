@@ -6,8 +6,12 @@ const log = console.log
 const err = console.error
 
 import * as chalk from "chalk"
-import { OneChoiceQuestion, MultipleChoiceQuestion, ConfirmQuestion, MultipleInputQuestions } from "./factory"
-import { GenericBuilder, Director } from "./builder"
+import { OneChoiceQuestion } from "./factory/one-choice"
+import { MultipleChoiceQuestion } from "./factory/multiple-choice"
+import { MultipleInputQuestions } from "./factory/multiple-input"
+import { ConfirmQuestion } from "./factory/confirm"
+import { GenericBuilder } from "./builder/builder"
+import { Director } from "./builder/director"
 
 let homedir = require('os').homedir() + "/"
 const cache_dir = homedir + ".revdown/cache/"
@@ -37,7 +41,7 @@ async function download_files(files) {
     }
 }
 
-function create_cache() {
+async function create_cache() {
     return fetch(url, { method: "Get" })
         .then(res => res.text())
         .then(body => {
@@ -185,8 +189,8 @@ function main(): number {
 
         try {
 
-            log(chalk.yellow(
-                `---------------------------------
+            log(chalk.yellow.bold(
+`---------------------------------
 |                               |
 |                               |
 |        reveal-markdown        |
@@ -225,4 +229,5 @@ function main(): number {
     return 1
 }
 
-main()
+if(main())
+    err("Program exited with code 1.")
