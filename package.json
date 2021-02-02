@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc ./src/index.ts && chmod +x ./src/index.js",
     "bin": "npm run build && sudo npm link",
-    "test": "tsc ./test/index.ts ./test/builder.ts --outDir ./test/js/ && qunit ./test/js/test",
+    "test": "tsc ./test/index.ts --outDir ./test/js/ && qunit ./test/js/test",
     "testfile": "npm run build && node ./src/index.js ./test/example/test.md",
     "unbin": "sudo npm unlink"
   },
