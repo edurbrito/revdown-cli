@@ -10,7 +10,7 @@ import { OneChoiceQuestion } from "./factory/one-choice"
 import { MultipleChoiceQuestion } from "./factory/multiple-choice"
 import { MultipleInputQuestions } from "./factory/multiple-input"
 import { ConfirmQuestion } from "./factory/confirm"
-import { GenericBuilder } from "./builder/builder"
+import { GenericBuilder } from "./builder/generic-builder"
 import { Director } from "./builder/director"
 
 let homedir = require('os').homedir() + "/"

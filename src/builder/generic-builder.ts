@@ -1,15 +1,4 @@
-interface Builder {
-    result: string
-    dir: string
-
-    reset(dir)
-    build_generic(title: string, resetcss: string, revealcss: string, revealjs: string)
-    build_theme(theme: string)
-    build_plugins(plugins: Array<string>)
-    build_highlight_theme(theme?: string)
-    build_markdown(markdown: string, separator: string, vseparator: string, noteseparator: string, charset: string)
-    get_result(): string
-}
+import { Builder } from './builder'
 
 class GenericBuilder implements Builder {
     result: string
@@ -102,30 +91,4 @@ plugins: %{revealplugins}
     }
 }
 
-class Director {
-    dir: string
-    builder: Builder
-
-    constructor(dir: string, builder: Builder) {
-        this.dir = dir
-        this.builder = builder
-    }
-
-    make(generic: [string,string,string,string], theme: string, plugins: Array<string>, markdown: [string,string,string,string,string], hitheme?: string) : Director {
-
-        this.builder.reset(this.dir)
-        this.builder.build_generic(...generic)
-        this.builder.build_theme(theme)
-        this.builder.build_plugins(plugins)
-        this.builder.build_markdown(...markdown)
-        this.builder.build_highlight_theme(hitheme)
-        
-        return this
-    }
-
-    get_result(){
-        return this.builder.get_result()
-    }
-}
-
-export {GenericBuilder, Director}
+export { GenericBuilder }
