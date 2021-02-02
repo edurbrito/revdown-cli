@@ -18,20 +18,21 @@ const cache_dir = homedir + ".revdown/cache/"
 const user_dir = homedir + ".revdown/user/"
 const url = "https://api.github.com/repos/hakimel/reveal.js/git/trees/master?recursive=true"
 
-let tree
 let user_config = {
     theme: "",
     plugins: [],
     highlight_theme: ""
 }
 
-async function download_files(files) {
-    for (const node of tree.tree) {
+async function download_files(files, tree) {
+    for (const node of tree) {
         for (const g of files) {
             if (node.path.includes(g)) {
                 fetch(node.url, { method: "Get" })
                     .then(res => res.text())
                     .then(body => {
+                        if (g.match(/.+\//))
+                            fs.mkdirSync(cache_dir + g.match(/.+\//).toString(), { recursive: true })
                         fs.writeFileSync(cache_dir + g, Buffer.from(JSON.parse(body).content, 'base64').toString())
                     })
 
@@ -43,17 +44,23 @@ async function download_files(files) {
 
 async function create_cache() {
     return fetch(url, { method: "Get" })
-        .then(res => res.text())
+        .then((response) => {
+            if (response.ok) {
+                return response.text();
+            } else {
+                throw 'API not responding';
+            }
+        })
         .then(body => {
             fs.writeFileSync(cache_dir + "tree.json", body)
         })
 }
 
-function get_themes(): Array<string> {
+function get_themes(tree): Array<string> {
 
     let themes = []
 
-    for (const node of tree.tree) {
+    for (const node of tree) {
         if (/.*\/theme\/.+\.css/.test(node.path)) {
             themes.push(node.path.replace(/^.+\//, ""))
         }
@@ -62,11 +69,24 @@ function get_themes(): Array<string> {
     return themes
 }
 
-function get_plugins(): Array<string> {
+function get_fonts(tree): Array<string> {
+
+    let fonts = []
+
+    for (const node of tree) {
+        if (/.*\/theme\/fonts\/.+\..+/.test(node.path)) {
+            fonts.push(node.path.replace(/.*\/theme\//, ""))
+        }
+    }
+
+    return fonts
+}
+
+function get_plugins(tree): Array<string> {
 
     let plugins = []
 
-    for (const node of tree.tree) {
+    for (const node of tree) {
         if (/.*\/?plugin\/(.+)\/\1\.js/.test(node.path)) {
             plugins.push(node.path.replace(/^.+\//, ""))
         }
@@ -75,11 +95,11 @@ function get_plugins(): Array<string> {
     return plugins
 }
 
-function get_highlight_themes(): Array<string> {
+function get_highlight_themes(tree): Array<string> {
 
     let highlight_themes = []
 
-    for (const node of tree.tree) {
+    for (const node of tree) {
         if (/.*\/?highlight\/.+\.css/.test(node.path)) {
             highlight_themes.push(node.path.replace(/^.+\//, ""))
         }
@@ -94,27 +114,32 @@ function ask_user(markdown_file: string) {
 
     create_cache().then(() => {
         fs.readFile(cache_dir + "tree.json", 'utf8', (error, data) => {
-            tree = JSON.parse(data)
-            download_files(['reveal.css', 'reset.css', 'reveal.js'])
+            let tree = JSON.parse(data).tree
 
-            let themes = get_themes()
+            download_files(['reveal.css', 'reset.css', 'reveal.js'], tree)
+
+            let themes = get_themes(tree)
 
             new OneChoiceQuestion("theme", "Which theme do you want to choose?", themes).create_question((a) => {
                 user_config.theme = a.theme
 
-                download_files([a.theme])
+                download_files([a.theme], tree)
 
-                let plugins = get_plugins()
+                let fonts = get_fonts(tree)
+
+                download_files(fonts, tree)
+
+                let plugins = get_plugins(tree)
 
                 new MultipleChoiceQuestion("plugins", "Which plugins do you want to include?", plugins).create_question((a) => {
                     user_config.plugins = a.plugins
-                    download_files(a.plugins)
+                    download_files(a.plugins, tree)
 
                     if (a.plugins.includes("highlight.js")) {
-                        let highlight_themes = get_highlight_themes()
+                        let highlight_themes = get_highlight_themes(tree)
                         new OneChoiceQuestion("hitheme", "Which highlight theme do you want to choose?", highlight_themes).create_question((a) => {
                             user_config.highlight_theme = a.hitheme
-                            download_files([a.hitheme])
+                            download_files([a.hitheme], tree)
                             generate_slides(markdown_file)
                             fs.writeFileSync(user_dir + "user.json", JSON.stringify(user_config))
                         })
@@ -125,6 +150,8 @@ function ask_user(markdown_file: string) {
                 })
             })
         })
+    }).catch((error) => {
+        err(`An error <${error}> has occurred. Aborting the execution...`)
     })
 }
 
@@ -229,5 +256,8 @@ function main(): number {
     return 1
 }
 
-if(main())
+if (require.main === module && main()) {
     err("Program exited with code 1.")
+}
+
+export { fs, cache_dir, user_dir, get_themes, get_fonts, get_plugins, get_highlight_themes }

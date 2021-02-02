@@ -5,8 +5,7 @@ class GenericBuilder implements Builder {
     dir: string
 
     static template: string = 
-`
-<!doctype html>
+`<!doctype html>
 <html>
 <head>
 <meta charset="utf-8">

@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc ./src/index.ts && chmod +x ./src/index.js",
     "bin": "npm run build && sudo npm link",
-    "test": "npm run build && node ./src/index.js ./test/test.md",
+    "test": "tsc ./test/index.ts ./test/builder.ts --outDir ./test/js/ && qunit ./test/js/test",
+    "testfile": "npm run build && node ./src/index.js ./test/example/test.md",
     "unbin": "sudo npm unlink"
   },
   "author": "edurbrito",
@@ -22,6 +23,7 @@
     "node-fetch": "^2.6.1"
   },
   "devDependencies": {
+    "qunit": "^2.14.0",
     "typescript": "^4.1.3"
   },
   "keywords": [
