@@ -29,7 +29,9 @@ To install this cli tool, run these commands:
 
 `revdown yourmarkdownfile.md`
 
-6. Open in your favorite browser the `yourmarkdownfile.html` file that was created
+6. Follow all the instructions until it finishes the presentation generation
+
+7. Open in your favorite browser the `yourmarkdownfile.html` file that was created
 
 ## Test
 
