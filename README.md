@@ -51,9 +51,15 @@ To install this CLI tool, run these commands:
 
 Multiple Unit Tests made with [*QUnit*](https://github.com/qunitjs/qunit) were created for some of the functions and classes. These tests can be found inside the [test](test/) folder. To run them:
 
+1. Install all the dependencies if not done yet
+
+`npm install`
+
+2. Run all the unit tests
+
 `npm run test`
 
-To test the tool with an actual markdown test file (see the example file [here](test/example/test.md)), run:
+3. To test the tool with an actual markdown test file (see the example file [here](test/example/test.md)), run
 
 `npm run test-file`
 
