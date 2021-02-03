@@ -22,7 +22,7 @@ For the CLI interface, [*inquirer*](https://github.com/SBoudrias/Inquirer.js) an
 
 > Not tested with Windows or Mac. Some (directory) changes may be needed in order to work on these systems.
 
-To install this CLI tool, run these commands:
+To install **revdown-cli**, follow this:
 
 1. Install [Node.js](https://nodejs.org/en/)
 2. Clone this repository
@@ -44,6 +44,12 @@ To install this CLI tool, run these commands:
 `revdown yourmarkdownfile.md`
 
 6. Follow all the instructions until it finishes the presentation generation
+
+   1. If it is the first time or no configurations were previously saved, it will ask you to choose the theme, the plugins, the highlight theme, the markdown configs, etc...
+    ![Initial configurations](images/init.gif)
+   
+   2. If the last configurations were saved a first prompt will ask if you want to use them again
+    ![Cached configurations](images/cached.gif)
 
 7. Open in your favorite browser the `yourmarkdownfile.html` file that was created
 

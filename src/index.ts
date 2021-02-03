@@ -24,7 +24,12 @@ let user_config = {
     highlight_theme: ""
 }
 
-async function download_files(files, tree) {
+/**
+ * Downloads a list of files from the GitHub repo
+ * @param files Array of files' names 
+ * @param tree Array of repo nodes containing the files' paths/names and urls
+ */
+async function download_files(files: Array<string>, tree: Array<any>) {
     for (const node of tree) {
         for (const g of files) {
             if (node.path.includes(g)) {
@@ -42,6 +47,9 @@ async function download_files(files, tree) {
     }
 }
 
+/**
+ * Saves the current GitHub repo structure tree for later consulting
+ */
 async function create_cache() {
     return fetch(url, { method: "Get" })
         .then((response) => {
@@ -56,6 +64,11 @@ async function create_cache() {
         })
 }
 
+/**
+ * Gets the list of themes currently available in the GitHub repo
+ * @param tree Array of repo nodes containing the files' paths/names and urls
+ * @returns The list of themes' names
+ */
 function get_themes(tree): Array<string> {
 
     let themes = []
@@ -69,6 +82,11 @@ function get_themes(tree): Array<string> {
     return themes
 }
 
+/**
+ * Gets the list of fonts currently available in the GitHub repo
+ * @param tree Array of repo nodes containing the files' paths/names and urls
+ * @returns The list of fonts' names
+ */
 function get_fonts(tree): Array<string> {
 
     let fonts = []
@@ -82,6 +100,11 @@ function get_fonts(tree): Array<string> {
     return fonts
 }
 
+/**
+ * Gets the list of plugins currently available in the GitHub repo
+ * @param tree Array of repo nodes containing the files' paths/names and urls
+ * @returns The list of plugins' names
+ */
 function get_plugins(tree): Array<string> {
 
     let plugins = []
@@ -95,6 +118,11 @@ function get_plugins(tree): Array<string> {
     return plugins
 }
 
+/**
+ * Gets the list of highlight themes currently available in the GitHub repo
+ * @param tree Array of repo nodes containing the files' paths/names and urls
+ * @returns The list of highlight themes' names
+ */
 function get_highlight_themes(tree): Array<string> {
 
     let highlight_themes = []
@@ -108,6 +136,11 @@ function get_highlight_themes(tree): Array<string> {
     return highlight_themes
 }
 
+/**
+ * Guides the user with a set of questions in order to build the presentation 
+ * and saves the last chosen configuration
+ * @param markdown_file The name of the markdown file to be used in the presentation generation
+ */
 function ask_user(markdown_file: string) {
     if (!fs.existsSync(cache_dir))
         fs.mkdirSync(cache_dir, { recursive: true })
@@ -129,9 +162,12 @@ function ask_user(markdown_file: string) {
 
                 download_files(fonts, tree)
 
-                let plugins = get_plugins(tree)
+                let plugins = get_plugins(tree).filter(item => item != "markdown.js")
 
-                new MultipleChoiceQuestion("plugins", "Which plugins do you want to include?", plugins).create_question((a) => {
+                new MultipleChoiceQuestion("plugins", "Which plugins do you want to include (besides markdown.js)?", plugins).create_question((a) => {
+                    
+                    a.plugins.push("markdown.js")
+                    
                     user_config.plugins = a.plugins
                     download_files(a.plugins, tree)
 
@@ -157,6 +193,10 @@ function ask_user(markdown_file: string) {
     })
 }
 
+/**
+ * Asks the user for the markdown configuration questions and builds the presentation
+ * @param markdown_file The name of the markdown file to be used in the presentation generation
+ */
 function generate_slides(markdown_file: string) {
 
     new MultipleInputQuestions(
@@ -224,7 +264,7 @@ function main(): number {
 |                               |
 |        revdown-cli            |
 |                               |
-| v1.0.0                        |
+| v1.0.1                        |
 ---------------------------------`))
 
             if (!fs.existsSync(user_dir + "user.json")) {
@@ -253,7 +293,7 @@ function main(): number {
         return 0
     }
 
-    err("Usage: revdown mymarkdownfile.md", process.argv.length)
+    err("Usage: revdown mymarkdownfile.md")
 
     return 1
 }
